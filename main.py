@@ -5,7 +5,7 @@ This is a vr01 of snake . Programing in linux
 
 96x65p
 """
-from time import process_time
+from time import perf_counter, process_time
 from tkinter import *
 import random
 
@@ -83,7 +83,7 @@ class Software:
 
 
         #self.screem.after(self.velocity, self.repaint)
-        self.screem.after(200, self.repaint)
+        self.screem.after(50, self.repaint)
 
 
     def clearSnakeTail(self):
@@ -93,7 +93,7 @@ class Software:
         tag = str(self.snake[0][0]) + ":" + str(self.snake[0][1])
         #Catch element
         pixel = self.canvas.find_withtag(tag)
-        self.canvas.itemconfig(pixel, fill="red")
+        self.canvas.itemconfig(pixel, fill="cyan")
 
 
         
@@ -136,21 +136,21 @@ class Software:
     def nextPostSnake(self):
         """
         Mouve a snake 
+        1 -> Generate a newXY Head
+        2 -> Mouve all body to next position
+        3 -> Put a head
         """
-        # Erase a tail snake
-        self.clearSnakeTail()
-        #print(self.snake)
-        lenSnake = len(self.snake)
-        for i in range(lenSnake, 1, -1):
-            # Change a head direction
-            # The body is the next position
-            if i == lenSnake:
-                #print("Cabezaaa:", self.snake[i-1])
-                newX = self.snake[i-1][0] + self.nextSnakeDirection[0]
-                newY = self.snake[i-1][1] + self.nextSnakeDirection[1]
-                self.snake[i-1] = [newX, newY]
-            else:
-                self.snake[i-1] = self.snake[i-2]
+       
+        newX, newY = self.snake[-1][0] + self.nextSnakeDirection[0], self.snake[-1][1] + self.nextSnakeDirection[1]
+        
+        for i in range(0, len(self.snake)-1):
+            self.snake[i] = self.snake[i+1]
+
+        self.snake[-1] = [newX, newY]
+
+
+
+
 
      
 
@@ -173,6 +173,8 @@ class Software:
             tag = str(self.snake[i-1][0]) + ":" + str(self.snake[i-1][1])
             pixel = self.canvas.find_withtag(tag)
             self.canvas.itemconfig(pixel, fill="black")
+
+        self.clearSnakeTail()
 
 
     def keyPressed(self, Event):
