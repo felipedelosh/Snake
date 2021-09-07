@@ -14,16 +14,25 @@ class Software:
         self.canvas = Canvas(self.screem, bg="snow", width=720, height=640)
         self.canvas.bind_all("<Key>", self.keyPressed)
         self.lblPlayerPoints = Label(self.canvas, text="Puntaje: ")
+        self.velocity = 120 # Its a velocity of game
         self.userPoints = 0
-        self.foodPosition = [] # position x, y to food
-        self.snake = [[],[],[]] # Position [xn, yn],...[x1, y1],[x, y]] to snake // xy=head
+        self.snake = [[0,0],[1,0],[2,0],[3,0]] # Position [xn, yn],...[x1, y1],[x, y]] to snake // xy=head
+        """
+        If you prees a direction button :
+        UP = x = x+0, y = y+1
+        Right = x = x+1, y=0
+        Down = x = x + 0, y = y - 1
+        Left = x = x-1, y=y+0
+        Next head and erase first item
+        """
+        self.nextSnakeDirection = [1, 0]
+        self.foodPosition = self.nextPostFood() # position x, y to food
         #  Game Status
         """
         Emule a machine of states
         """
-        self.gameStatus = ""
         self.allGameStatus = ["run", "pause"]
-
+        self.gameStatus = self.allGameStatus[0]
 
 
         #Show a window a configure items
@@ -47,7 +56,7 @@ class Software:
 
         for i in range(0, 97):
             for j in range(0, 66):
-                self.canvas.create_rectangle(x0, y0, x, y, tags=str(i)+":"+str(j))
+                self.canvas.create_rectangle(x0, y0, x, y, tags=str(j)+":"+str(i))
                 x0 = x0 + 10
                 x = x0 + 10
             
@@ -56,12 +65,33 @@ class Software:
             y0 = y0 + 10
             y = y0 + 10
 
-
+        self.screem.after(0, self.repaint)
         self.screem.mainloop()
 
 
-    def repaint(self):
-        pass
+    def repaint(self):        
+        if self.gameStatus == "run":
+            self.paintFood()
+            self.paintSnake()
+
+
+            self.lblPlayerPoints['text'] = "Puntaje: " + str(self.userPoints)
+
+
+        self.screem.after(self.velocity, self.repaint)
+
+    def clearScreem(self):
+        """
+        erase all pixels
+        """
+        for i in range(0, 97):
+            for j in range(0, 66):
+                #Cacth tag
+                tag = str(j)+":"+str(i)
+                #Catch element
+                pixel = self.canvas.find_withtag(tag)
+                self.canvas.itemconfig(pixel, fill="white")
+
 
     def initGame(self):
         """
@@ -79,25 +109,53 @@ class Software:
         Put a food in random position xy far away to snake
         """
         x, y = random.randint(0, 66), random.randint(0, 97)
+        if [x, y] not in self.snake:
+            return [x, y]
+        else:
+            xy = self.nextPostFood()
+            return xy
+
+    def nextPostSnake(self):
+        """
+        
+        """
+        pass
 
 
     def paintFood(self):
         """
+        Need consult a xy food and then find tag to paint
         """
-        print(self.foodPosition)
+        tag = str(self.foodPosition[0]) + ":" + str(self.foodPosition[1])
+        pixel = self.canvas.find_withtag(tag)
+        self.canvas.itemconfig(pixel, fill="black")
+
+    def paintSnake(self):
+        """
+        Need to paint in reverse
+        """
+        snakeSize = len(self.snake)
+        for i in range(snakeSize, 0, -1):
+            tag = str(self.snake[i-1][0]) + ":" + str(self.snake[i-1][1])
+            pixel = self.canvas.find_withtag(tag)
+            self.canvas.itemconfig(pixel, fill="black")
 
 
     def keyPressed(self, Event):
         if str(Event.keysym) == "Up":
+            self.nextSnakeDirection = [0, 1]
             print("up")
 
         if str(Event.keysym) == "Right":
+            self.nextSnakeDirection = [1, 0]
             print("Right")
 
         if str(Event.keysym) == "Down":
+            self.nextSnakeDirection = [0, -1]
             print("Down")
 
         if str(Event.keysym) == "Left":
+            self.nextSnakeDirection = [-1, 0]
             print("Left")
 
         if str(Event.keysym) == "space":
