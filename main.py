@@ -41,6 +41,9 @@ class Software:
 
 
     def showGame(self):
+        """
+        Launch a main screema and put main elements 
+        """
         self.screem.title("Snake by loko")
         self.screem.geometry("720x640")
 
@@ -74,15 +77,13 @@ class Software:
         if self.gameStatus == "run":
             self.paintFood()
             self.paintSnake()
-            self.clearSnakeTail()
-
             self.nextPostSnake()
 
             self.lblPlayerPoints['text'] = "Puntaje: " + str(self.userPoints)
 
 
         #self.screem.after(self.velocity, self.repaint)
-        self.screem.after(2000, self.repaint)
+        self.screem.after(200, self.repaint)
 
 
     def clearSnakeTail(self):
@@ -136,14 +137,22 @@ class Software:
         """
         Mouve a snake 
         """
-        for i in range(len(self.snake), 0, -1):
-            #print(self.snake[i-1], self.nextSnakeDirection)
-            # Generate a new Head
-            newX = self.snake[i-1][0] + self.nextSnakeDirection[0]
-            newY = self.snake[i-1][1] + self.nextSnakeDirection[1]
-            self.snake[i-1] = [newX, newY]
+        # Erase a tail snake
+        self.clearSnakeTail()
+        #print(self.snake)
+        lenSnake = len(self.snake)
+        for i in range(lenSnake, 1, -1):
+            # Change a head direction
+            # The body is the next position
+            if i == lenSnake:
+                #print("Cabezaaa:", self.snake[i-1])
+                newX = self.snake[i-1][0] + self.nextSnakeDirection[0]
+                newY = self.snake[i-1][1] + self.nextSnakeDirection[1]
+                self.snake[i-1] = [newX, newY]
+            else:
+                self.snake[i-1] = self.snake[i-2]
 
-        #print("================")
+     
 
 
         
@@ -167,21 +176,31 @@ class Software:
 
 
     def keyPressed(self, Event):
+        """
+        If you press a key the snake mouve 
+        i need valite if is posible.
+        for example if you before mouve UP ... you canot mouve down
+        Snake never reverse
+        """
         if str(Event.keysym) == "Up":
-            self.nextSnakeDirection = [0, -1]
-            #print("up")
+            if self.nextSnakeDirection != [0, 1]:
+                self.nextSnakeDirection = [0, -1]
+                #print("up")
 
         if str(Event.keysym) == "Right":
-            self.nextSnakeDirection = [1, 0]
-            #print("Right")
+            if self.nextSnakeDirection != [-1, 0]:
+                self.nextSnakeDirection = [1, 0]
+                #print("Right")
 
         if str(Event.keysym) == "Down":
-            self.nextSnakeDirection = [0, 1]
-            #print("Down")
+            if self.nextSnakeDirection != [0, -1]:
+                self.nextSnakeDirection = [0, 1]
+                #print("Down")
 
         if str(Event.keysym) == "Left":
-            self.nextSnakeDirection = [-1, 0]
-            #print("Left")
+            if self.nextSnakeDirection != [1, 0]:
+                self.nextSnakeDirection = [-1, 0]
+                #print("Left")
 
         if str(Event.keysym) == "space":
             print("space")
