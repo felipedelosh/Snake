@@ -8,7 +8,6 @@ This is a vr01 of snake . Programing in linux
 from tkinter import *
 import random
 
-
 class Software:
     def __init__(self) -> None:
         self.screem = Tk()
@@ -18,6 +17,13 @@ class Software:
         self.userPoints = 0
         self.foodPosition = [] # position x, y to food
         self.snake = [[],[],[]] # Position [xn, yn],...[x1, y1],[x, y]] to snake // xy=head
+        #  Game Status
+        """
+        Emule a machine of states
+        """
+        self.gameStatus = ""
+        self.allGameStatus = ["run", "pause"]
+
 
 
         #Show a window a configure items
@@ -53,6 +59,10 @@ class Software:
 
         self.screem.mainloop()
 
+
+    def repaint(self):
+        pass
+
     def initGame(self):
         """
         Reset a game:
@@ -73,12 +83,26 @@ class Software:
 
     def paintFood(self):
         """
-        
         """
         print(self.foodPosition)
 
 
     def keyPressed(self, Event):
+        if str(Event.keysym) == "Up":
+            print("up")
+
+        if str(Event.keysym) == "Right":
+            print("Right")
+
+        if str(Event.keysym) == "Down":
+            print("Down")
+
+        if str(Event.keysym) == "Left":
+            print("Left")
+
+        if str(Event.keysym) == "space":
+            print("space")
+
         print(Event.keysym)
         
 
