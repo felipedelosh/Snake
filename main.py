@@ -5,6 +5,7 @@ This is a vr01 of snake . Programing in linux
 
 96x65p
 """
+from time import process_time
 from tkinter import *
 import random
 
@@ -73,12 +74,28 @@ class Software:
         if self.gameStatus == "run":
             self.paintFood()
             self.paintSnake()
+            self.clearSnakeTail()
 
+            self.nextPostSnake()
 
             self.lblPlayerPoints['text'] = "Puntaje: " + str(self.userPoints)
 
 
-        self.screem.after(self.velocity, self.repaint)
+        #self.screem.after(self.velocity, self.repaint)
+        self.screem.after(2000, self.repaint)
+
+
+    def clearSnakeTail(self):
+        """
+        Before the snake mouve i need erase tail
+        """
+        tag = str(self.snake[0][0]) + ":" + str(self.snake[0][1])
+        #Catch element
+        pixel = self.canvas.find_withtag(tag)
+        self.canvas.itemconfig(pixel, fill="red")
+
+
+        
 
     def clearScreem(self):
         """
@@ -117,11 +134,19 @@ class Software:
 
     def nextPostSnake(self):
         """
-        
+        Mouve a snake 
         """
-        pass
+        for i in range(len(self.snake), 0, -1):
+            #print(self.snake[i-1], self.nextSnakeDirection)
+            # Generate a new Head
+            newX = self.snake[i-1][0] + self.nextSnakeDirection[0]
+            newY = self.snake[i-1][1] + self.nextSnakeDirection[1]
+            self.snake[i-1] = [newX, newY]
+
+        #print("================")
 
 
+        
     def paintFood(self):
         """
         Need consult a xy food and then find tag to paint
@@ -143,26 +168,23 @@ class Software:
 
     def keyPressed(self, Event):
         if str(Event.keysym) == "Up":
-            self.nextSnakeDirection = [0, 1]
-            print("up")
+            self.nextSnakeDirection = [0, -1]
+            #print("up")
 
         if str(Event.keysym) == "Right":
             self.nextSnakeDirection = [1, 0]
-            print("Right")
+            #print("Right")
 
         if str(Event.keysym) == "Down":
-            self.nextSnakeDirection = [0, -1]
-            print("Down")
+            self.nextSnakeDirection = [0, 1]
+            #print("Down")
 
         if str(Event.keysym) == "Left":
             self.nextSnakeDirection = [-1, 0]
-            print("Left")
+            #print("Left")
 
         if str(Event.keysym) == "space":
             print("space")
-
-        print(Event.keysym)
-        
 
 
 s = Software()
