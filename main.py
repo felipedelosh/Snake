@@ -15,7 +15,7 @@ class Software:
         self.canvas = Canvas(self.screem, bg="snow", width=720, height=640)
         self.canvas.bind_all("<Key>", self.keyPressed)
         self.lblPlayerPoints = Label(self.canvas, text="Puntaje: ")
-        self.velocity = 120 # Its a velocity of game
+        self.velocity = 60 # Its a velocity of game
         self.userPoints = 0
         self.snake = [[0,0],[1,0],[2,0],[3,0]] # Position [xn, yn],...[x1, y1],[x, y]] to snake // xy=head
         """
@@ -90,9 +90,10 @@ class Software:
 
             self.lblPlayerPoints['text'] = "Puntaje: " + str(self.userPoints)
 
+        if self.gameStatus == "pause":
+            pass
 
-        #self.screem.after(self.velocity, self.repaint)
-        self.screem.after(50, self.playGame)
+        self.screem.after(self.velocity, self.playGame)
 
 
     def clearSnakeTail(self):
@@ -116,10 +117,12 @@ class Software:
         When snake eat food the snakes grow
         then food hav new XY
         Update score
+        Speed++
         """
         self.snake.extend([self.foodPosition]) 
         self.foodPosition = self.nextPostFood()
         self.userPoints = self.userPoints + 1
+        self.velocity = self.velocity - 1
 
 
 
@@ -136,7 +139,7 @@ class Software:
                 self.canvas.itemconfig(pixel, fill="white")
 
 
-    def initGame(self):
+    def resetGame(self):
         """
         Reset a game:
         user points reset
@@ -232,7 +235,8 @@ class Software:
                 self.gameStatus = "run"
 
         if str(Event.keysym) == "r" or str(Event.keysym) == "R":
-            print("reset")
+            print("Epa")
+            self.resetGame()
         
 
 
