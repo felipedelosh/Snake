@@ -69,12 +69,18 @@ class Software:
             y0 = y0 + 10
             y = y0 + 10
 
-        self.screem.after(0, self.repaint)
+        self.screem.after(0, self.playGame)
         self.screem.mainloop()
 
 
-    def repaint(self):        
+    def playGame(self):        
+        """
+        1 -> what mode game i run?
+            1.1 -> Validate a rules and next step
+        """
         if self.gameStatus == "run":
+            if self.snakeEatFood():
+                self.snakeGrowingUp()
             self.paintFood()
             self.paintSnake()
             self.nextPostSnake()
@@ -83,7 +89,7 @@ class Software:
 
 
         #self.screem.after(self.velocity, self.repaint)
-        self.screem.after(50, self.repaint)
+        self.screem.after(50, self.playGame)
 
 
     def clearSnakeTail(self):
@@ -96,7 +102,23 @@ class Software:
         self.canvas.itemconfig(pixel, fill="cyan")
 
 
-        
+    def snakeEatFood(self):
+        """
+        Return if the snake head and food interject
+        """
+        return self.snake[-1] == self.foodPosition
+
+    def snakeGrowingUp(self):
+        """
+        When snake eat food the snakes grow
+        then food hav new XY
+        Update score
+        """
+        self.snake.extend([self.foodPosition]) 
+        self.foodPosition = self.nextPostFood()
+        self.userPoints = self.userPoints + 1
+
+
 
     def clearScreem(self):
         """
@@ -126,7 +148,7 @@ class Software:
         """
         Put a food in random position xy far away to snake
         """
-        x, y = random.randint(0, 66), random.randint(0, 97)
+        x, y = random.randint(0, 60), random.randint(0, 60)
         if [x, y] not in self.snake:
             return [x, y]
         else:
@@ -148,13 +170,6 @@ class Software:
 
         self.snake[-1] = [newX, newY]
 
-
-
-
-
-     
-
-
         
     def paintFood(self):
         """
@@ -162,7 +177,7 @@ class Software:
         """
         tag = str(self.foodPosition[0]) + ":" + str(self.foodPosition[1])
         pixel = self.canvas.find_withtag(tag)
-        self.canvas.itemconfig(pixel, fill="black")
+        self.canvas.itemconfig(pixel, fill="red")
 
     def paintSnake(self):
         """
