@@ -3,7 +3,7 @@ Felipedelosh
 
 This is a vr01 of snake . Programing in linux
 
-96x65p
+70x80p
 """
 from time import perf_counter, process_time
 from tkinter import *
@@ -54,20 +54,23 @@ class Software:
 
         # Paint game board
         x0 = 30
-        y0 = 40
-        x = 40
-        y = 50
+        y0 = 50
+        x = 38
+        y = 58
 
-        for i in range(0, 97):
-            for j in range(0, 66):
+        for i in range(0, 70):
+            for j in range(0, 80):
                 self.canvas.create_rectangle(x0, y0, x, y, tags=str(j)+":"+str(i))
-                x0 = x0 + 10
-                x = x0 + 10
-            
+                x0 = x0 + 8
+                x = x0 + 8
+                
+
             x0 = 30
-            x = 40
-            y0 = y0 + 10
-            y = y0 + 10
+            y0 = y0 + 8
+            x = 38
+            y = y0 + 8
+            
+       
 
         self.screem.after(0, self.playGame)
         self.screem.mainloop()
@@ -148,7 +151,7 @@ class Software:
         """
         Put a food in random position xy far away to snake
         """
-        x, y = random.randint(0, 60), random.randint(0, 60)
+        x, y = random.randint(0, 80), random.randint(0, 70)
         if [x, y] not in self.snake:
             return [x, y]
         else:
@@ -221,6 +224,16 @@ class Software:
 
         if str(Event.keysym) == "space":
             print("space")
+
+        if str(Event.keysym) == "p" or str(Event.keysym) == "P":
+            if self.gameStatus == "run":
+                self.gameStatus = "pause"
+            else:
+                self.gameStatus = "run"
+
+        if str(Event.keysym) == "r" or str(Event.keysym) == "R":
+            print("reset")
+        
 
 
 s = Software()
